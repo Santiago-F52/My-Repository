@@ -1,1 +1,218 @@
 
+/* 
+ * File:   main.cpp
+ * Author: mlehr
+ * Created on March 21st, 2023, 11:03 AM
+ * Purpose:  Template to be used for all
+ *           future Hmwk, Labs, Exams, Projects
+ */
+
+//System Libraries
+#include <iostream>  //Input Output Library
+#include <ctime> //For the random function
+#include <cstdlib> //For the random function
+#include <cstring> 
+#include <fstream>
+using namespace std;
+
+//User Libraries
+
+//Global Constants not Variables
+//Science, Math, Conversions, Dimensions
+
+//Function Prototypes
+
+//Execution begins here at main
+int main(int argc, char** argv) {
+    //Set random number seed
+    srand(static_cast<unsigned int>(time(0)));
+    //Declare Variables
+    string suit1="S", suit2="H", suit3="D", suit4="C";
+    string pSuit1, pSuit2, dSuit1, dSuit2;
+    string pRank1, pRank2, dRank1, dRank2;
+    char again;
+    int pVal1, pVal2, dVal1, dVal2;
+    int Pwins=0, Dwins=0, Ties=0,
+        pwins=0, dwins=0, tie=0;    
+    
+    
+    ifstream infile("stats.txt");//Read in values from the file
+    if(infile){
+        infile >> Pwins >> Dwins >> Ties;
+        infile.close();
+    }else{ cout<<"Was not able to read in file will start from zero"<<endl;}
+            
+    
+    do{
+    //Initialize Variables
+    int plSuit1 = rand()% 4+1;// Randomly choose the suit and value for the cards
+    int plRank1 = rand()% 13+2;// Between 2-14
+    int plSuit2 = rand()% 4+1;// Between 1-4
+    int plRank2 = rand()% 13+2;
+
+    int dlSuit1 = rand()% 4+1;
+    int dlRank1 = rand()% 13+2;
+    int dlSuit2 = rand()% 4+1;
+    int dlRank2 = rand()% 13+2;
+    
+    //Map/Process the Inputs -> Outputs
+    switch (plSuit1) {  // Map the strings to suits from the random values given 
+        case 1: pSuit1=suit1; break;
+        case 2: pSuit1=suit2; break;
+        case 3: pSuit1=suit3; break;
+        case 4: pSuit1=suit4; break;
+    }
+    switch (plSuit2) {
+        case 1: pSuit2=suit1; break;
+        case 2: pSuit2=suit2; break;
+        case 3: pSuit2=suit3; break;
+        case 4: pSuit2=suit4; break;
+    }
+    switch (dlSuit1) {
+        case 1: dSuit1=suit1; break;
+        case 2: dSuit1=suit2; break;
+        case 3: dSuit1=suit3; break;
+        case 4: dSuit1=suit4; break;
+    }
+    switch (dlSuit2) {
+        case 1: dSuit2=suit1; break;
+        case 2: dSuit2=suit2; break;
+        case 3: dSuit2=suit3; break;
+        case 4: dSuit2=suit4; break;
+    }
+    if (plRank1>=2 && plRank1<= 10){//Mapping int's to face or non-face cards for the player's first card
+        pRank1 = to_string(plRank1);
+        pVal1 = plRank1;
+    }else if (plRank1 == 11) {
+        pRank1 = "J";
+        pVal1 = 10;
+    } else if (plRank1 == 12) {
+        pRank1 = "Q";
+        pVal1 = 10;
+    } else if (plRank1 == 13) {
+        pRank1 = "K";
+        pVal1 = 10;
+    } else if (plRank1 == 14) {
+        pRank1 = "A";
+        pVal1 = 11;
+    }
+
+    if (plRank2>=2 && plRank2<=10) {//Mapping int's to face or non-face cards for the player's second card
+        pRank2 = to_string(plRank2);
+        pVal2 = plRank2;
+    } else if (plRank2 == 11) {
+        pRank2 = "J";
+        pVal2 = 10;
+    } else if (plRank2 == 12) {
+        pRank2 = "Q";
+        pVal2 = 10;
+    } else if (plRank2 == 13) {
+        pRank2 = "K";
+        pVal2 = 10;
+    } else if (plRank2 == 14) {
+        pRank2 = "A";
+        pVal2 = 11;
+    }
+
+    if (dlRank1>=2 && dlRank1<=10) {//Mapping int's to face or non-face cards for the dealer's first card
+        dRank1 = to_string(dlRank1);
+        dVal1 = dlRank1;
+    } else if (dlRank1 == 11) {
+        dRank1 = "J";
+        dVal1 = 10;
+    } else if (dlRank1 == 12) {
+        dRank1 = "Q";
+        dVal1 = 10;
+    } else if (dlRank1 == 13) {
+        dRank1 = "K";
+        dVal1 = 10;
+    } else if (dlRank1 == 14) {
+        dRank1 = "A";
+        dVal1 = 11;
+    }
+
+    // Dealer's second card
+    if (dlRank2>=2 && dlRank2<=10) {//Mapping int's to face or non-face cards for the dealer's second card card
+        dRank2 = to_string(dlRank2);
+        dVal2 = dlRank2;
+    } else if (dlRank2 == 11) {
+        dRank2 = "J";
+        dVal2 = 10;
+    } else if (dlRank2 == 12) {
+        dRank2 = "Q";
+        dVal2 = 10;
+    } else if (dlRank2 == 13) {
+        dRank2 = "K";
+        dVal2 = 10;
+    } else if (dlRank2 == 14) {
+        dRank2 = "A";
+        dVal2 = 11;
+    }
+    int pTotal = pVal1+pVal2;//Calculate the sum of the cards
+    int dTotal = dVal1+dVal2;
+    
+    if (pTotal>21 && (plRank1 == 14 || plRank2 == 14) ){//if the player has an Ace
+        pTotal -= 10;
+    }
+    
+    if (dTotal>21 && (dlRank1 == 14 || dlRank2 == 14) ){//if the dealer has an Ace
+        dTotal -= 10;
+    }
+    
+    //Display Inputs/Outputs
+    cout <<"Player's cards: "<< pRank1<< pSuit1<<" and "<< pRank2<< pSuit2 <<endl;
+    cout <<"Player's total: "<< pTotal;
+    if(pTotal == 21){cout<<" BLACK-JACK!!!";}
+    cout << endl;
+
+    cout << "Dealer's cards: " << dRank1 << dSuit1 << " and " << dRank2 << dSuit2 << endl;
+    cout << "Dealer's total: " << dTotal << endl;
+    
+    cout<<((pTotal>21)?"Player busts. Dealer wins.":
+        (dTotal>21)?"Dealer busts. Player wins.":
+        (pTotal>dTotal)?"player wins.":
+        (pTotal<dTotal)?"Dealer wins.":
+        "It is a tie.")<<endl;
+              
+    if (pTotal > 21) {
+        dwins++;
+        Dwins++;
+    } else if (dTotal > 21) {
+        pwins++;
+        Pwins++;
+    } else if (pTotal > dTotal) {
+        pwins++;
+        Pwins++;
+    } else if (dTotal > pTotal) {
+        dwins++;
+        Dwins++;
+    } else {
+        tie++;
+        Ties++;
+    }
+    
+    ofstream outfile("stats.txt");//Read out values to the file
+    if(outfile){
+        outfile << Pwins <<" " << Dwins <<" " << Ties <<" " << endl;
+        outfile.close();
+    }else{ cout<<"Was not able to save stats"<<endl;}
+    
+    cout<<"Would you like to play again?"<<endl<<"Type the letter (Y) for yes : Any other letter for no"<<endl;
+    cin>>again;
+    } while (again == 'Y' || again == 'y');
+    
+    cout<<"===GAME-STATS==="<<endl;
+    cout <<"Player wins : "<< pwins << " Dealer wins : " << dwins << " Ties : "<< tie <<endl<<endl;
+    
+    cout << "===ALL-TIME-STATS===" << endl;
+    cout <<"Player wins : "<< Pwins << " Dealer wins : " << Dwins << " Ties : "<< Ties;
+    ofstream outfile("stats.txt");//Read out values to the file
+    if(outfile){
+        outfile << Pwins <<" " << Dwins <<" " << Ties <<" " << endl;
+        outfile.close();
+    }else{ cout<<"Was not able to save stats"<<endl;} 
+    //Clean up memory and files
+    
+    //Exit the Program
+    return 0;
+} 
